@@ -19,14 +19,64 @@ def download_data(url):
 
 
 def processData(file_content):
-    pass
+    personData = {}
+    logger = logging.getLogger('assignment2')
+
+    lines = file_content.splitlines()
+
+    for line_number, line in enumerate(lines, start=1):
+        if line_number == 1:
+            continue
+
+        person = line.split(',')
+
+        person_id = int(person[0])
+        name = person[1]
+        birthday = person[2]
+
+        try:
+            birthday = datetime.datetime.strptime(birthday, '%d/%m/%Y')
+            personData[person_id] = (name, birthday)
+        except ValueError:
+            logger.error(
+                "Error processing line #%s for ID #%s",
+                line_number,
+                person_id
+            )
+
+     return personData
+            
 
 
 def displayPerson(id, personData):
-    pass
+    if id not in personData:
+        print("No user found with that id")
+        return
+    name, birthday = personData[id]
+    print("Person #{} is {} with a birthday of {}".format(
+        id, name, birthday.strftime('%Y-%m-%d')
+    ))
 
 def main(url):
-    print(f"Running main with URL = {url}...")
+    try:
+        csvData = download_data(url)
+    except Exception as e:
+        print("Error downloading data:", e)
+        return
+    logging.basicConfig(
+        filename='error.log',
+        level=logging.ERROR,
+        format='%(message)s'
+    )
+    personData = processData(csvData)
+
+    while True:
+        user_id = int(input("Enter an ID to lookup: "))
+
+        if user_id <= 0:
+            break
+
+        displayPerson(user_id, personData)
 
 
 if __name__ == "__main__":
