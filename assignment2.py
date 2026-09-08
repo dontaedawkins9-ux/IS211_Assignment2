@@ -43,7 +43,6 @@ def processData(file_content):
                 line_number,
                 person_id
             )
-
     return personData
             
 
