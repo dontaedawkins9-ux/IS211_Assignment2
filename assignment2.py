@@ -3,9 +3,20 @@ import urllib.request
 import logging
 import datetime
 
-def downloadData(url):
-    """Downloads the data"""
-    pass
+def download_data(url):
+    """
+    Reads data from a URL and returns the data as a string
+
+    :param url:
+    :return: the content of the URL
+    """
+    # read the URL
+    with urllib.request.urlopen(url) as response:
+        response = response.read().decode('utf-8')
+
+    # return the data
+    return response
+
 
 def processData(file_content):
     pass
